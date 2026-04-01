@@ -5,7 +5,7 @@
 
 Ontology Model Context Protocol Server for deterministic, ontology-driven DTO/schema generation.
 
-![OntoMCP Logo](docs/logo.png)
+<img src="docs/logo.png" alt="OntoMCP Logo" width="300" height="300" style="max-width: 300px; max-height: 300px;" />
 
 ## Why
 
