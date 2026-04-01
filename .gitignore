@@ -1,5 +1,29 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
 coverage/
-.vscode/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# IDE / OS
 .DS_Store
+.idea/
+.vscode/
+
+# Caches
+.cache/
+.turbo/
+*.tmp

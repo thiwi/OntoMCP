@@ -1,7 +1,7 @@
 {
   "name": "ontomcp",
   "version": "1.0.0",
-  "description": "",
+  "description": "Ontology Model Context Protocol Server (OntoMCP) for deterministic ontology-driven schema generation.",
   "main": "dist/index.js",
   "scripts": {
     "test": "vitest run",
@@ -11,9 +11,25 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "mcp",
+    "ontology",
+    "shacl",
+    "owl",
+    "json-schema",
+    "zod",
+    "validation"
+  ],
+  "author": "thiwi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thiwi/OntoMCP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thiwi/OntoMCP/issues"
+  },
+  "homepage": "https://github.com/thiwi/OntoMCP#readme",
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
