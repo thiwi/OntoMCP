@@ -1,0 +1,21 @@
+{
+  "rootEntity": "Obligor",
+  "validPayload": {
+    "obligorId": "OBL-9001",
+    "legalName": "Acme Holdings SE",
+    "hasRiskRating": {
+      "ratingScore": 7,
+      "ratingGrade": "BBB-"
+    },
+    "hasExternalRating": {
+      "crmRatingSource": "Moody's",
+      "crmRatingCode": "Baa2"
+    }
+  },
+  "invalidPayload": {
+    "obligorId": 9001,
+    "hasRiskRating": {
+      "ratingScore": "high"
+    }
+  }
+}

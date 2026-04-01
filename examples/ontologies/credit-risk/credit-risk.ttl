@@ -1,0 +1,257 @@
+@prefix risk: <http://example.com/risk#> .
+@prefix crm: <http://example.com/crm#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+risk:Obligor a owl:Class ;
+  rdfs:label "Obligor" ;
+  rdfs:comment "Counterparty with credit exposure to the institution." .
+
+risk:Exposure a owl:Class ;
+  rdfs:label "Exposure" ;
+  rdfs:comment "Risk position linked to a facility and valuation." .
+
+risk:Facility a owl:Class ;
+  rdfs:label "Facility" ;
+  rdfs:comment "Credit facility contractual frame for exposures." .
+
+risk:Covenant a owl:Class ;
+  rdfs:label "Covenant" ;
+  rdfs:comment "Financial or operational covenant attached to a facility." .
+
+risk:CollateralAsset a owl:Class ;
+  rdfs:label "Collateral Asset" ;
+  rdfs:comment "Collateral object securing exposures or facilities." .
+
+risk:Valuation a owl:Class ;
+  rdfs:label "Valuation" ;
+  rdfs:comment "Collateral or exposure valuation snapshot." .
+
+risk:Guarantee a owl:Class ;
+  rdfs:label "Guarantee" ;
+  rdfs:comment "Guarantee instrument for facility risk mitigation." .
+
+risk:DefaultEvent a owl:Class ;
+  rdfs:label "Default Event" ;
+  rdfs:comment "Default event observed for obligor or facility." .
+
+risk:Rating a owl:Class ;
+  rdfs:label "Risk Rating" ;
+  rdfs:comment "Internal credit rating." .
+
+crm:Rating a owl:Class ;
+  rdfs:label "CRM Rating" ;
+  rdfs:comment "Rating from an external CRM or rating provider." .
+
+risk:obligorId a owl:DatatypeProperty ;
+  rdfs:label "obligor id" ;
+  rdfs:comment "Stable obligor identifier." .
+
+risk:legalName a owl:DatatypeProperty ;
+  rdfs:label "legal name" ;
+  rdfs:comment "Registered legal name." .
+
+risk:facilityId a owl:DatatypeProperty ;
+  rdfs:label "facility id" ;
+  rdfs:comment "Stable facility identifier." .
+
+risk:exposureId a owl:DatatypeProperty ;
+  rdfs:label "exposure id" ;
+  rdfs:comment "Stable exposure identifier." .
+
+risk:notionalAmount a owl:DatatypeProperty ;
+  rdfs:label "notional amount" ;
+  rdfs:comment "Notional amount in minor units." .
+
+risk:covenantCode a owl:DatatypeProperty ;
+  rdfs:label "covenant code" ;
+  rdfs:comment "Code identifying covenant template." .
+
+risk:covenantText a owl:DatatypeProperty ;
+  rdfs:label "covenant text" ;
+  rdfs:comment "Human-readable covenant definition." .
+
+risk:breachedOn a owl:DatatypeProperty ;
+  rdfs:label "breached on" ;
+  rdfs:comment "Timestamp of covenant breach." .
+
+risk:assetId a owl:DatatypeProperty ;
+  rdfs:label "asset id" ;
+  rdfs:comment "Stable collateral asset identifier." .
+
+risk:assetType a owl:DatatypeProperty ;
+  rdfs:label "asset type" ;
+  rdfs:comment "Collateral asset type." .
+
+risk:valuationId a owl:DatatypeProperty ;
+  rdfs:label "valuation id" ;
+  rdfs:comment "Stable valuation identifier." .
+
+risk:appraisedAmount a owl:DatatypeProperty ;
+  rdfs:label "appraised amount" ;
+  rdfs:comment "Appraised amount in minor units." .
+
+risk:guaranteeId a owl:DatatypeProperty ;
+  rdfs:label "guarantee id" ;
+  rdfs:comment "Stable guarantee identifier." .
+
+risk:guarantorName a owl:DatatypeProperty ;
+  rdfs:label "guarantor name" ;
+  rdfs:comment "Name of guarantor entity." .
+
+risk:defaultEventId a owl:DatatypeProperty ;
+  rdfs:label "default event id" ;
+  rdfs:comment "Stable default event identifier." .
+
+risk:eventTimestamp a owl:DatatypeProperty ;
+  rdfs:label "event timestamp" ;
+  rdfs:comment "Timestamp of default event observation." .
+
+risk:ratingScore a owl:DatatypeProperty ;
+  rdfs:label "rating score" ;
+  rdfs:comment "Numerical internal score." .
+
+risk:ratingGrade a owl:DatatypeProperty ;
+  rdfs:label "rating grade" ;
+  rdfs:comment "Internal grade code." .
+
+crm:crmRatingSource a owl:DatatypeProperty ;
+  rdfs:label "crm rating source" ;
+  rdfs:comment "External rating source system." .
+
+crm:crmRatingCode a owl:DatatypeProperty ;
+  rdfs:label "crm rating code" ;
+  rdfs:comment "External rating code." .
+
+risk:hasFacility a owl:ObjectProperty ;
+  rdfs:label "has facility" ;
+  rdfs:comment "Facilities linked to obligor." .
+
+risk:hasRiskRating a owl:ObjectProperty ;
+  rdfs:label "has risk rating" ;
+  rdfs:comment "Internal risk rating of obligor." .
+
+risk:hasExternalRating a owl:ObjectProperty ;
+  rdfs:label "has external rating" ;
+  rdfs:comment "External CRM rating of obligor." .
+
+risk:hasDefaultEvent a owl:ObjectProperty ;
+  rdfs:label "has default event" ;
+  rdfs:comment "Default events linked to obligor." .
+
+risk:legacyDefaultPath a owl:ObjectProperty ;
+  rdfs:label "legacy default path" ;
+  rdfs:comment "Legacy inferred relation not translated by MVP compiler." ;
+  owl:propertyChainAxiom ( risk:hasFacility risk:hasExposure ) .
+
+risk:borrower a owl:ObjectProperty ;
+  rdfs:label "borrower" ;
+  rdfs:comment "Borrowing obligor on facility." .
+
+risk:hasExposure a owl:ObjectProperty ;
+  rdfs:label "has exposure" ;
+  rdfs:comment "Exposures associated to facility." .
+
+risk:hasCovenant a owl:ObjectProperty ;
+  rdfs:label "has covenant" ;
+  rdfs:comment "Covenants attached to facility." .
+
+risk:hasGuarantee a owl:ObjectProperty ;
+  rdfs:label "has guarantee" ;
+  rdfs:comment "Guarantees attached to facility." .
+
+risk:hasCollateralAsset a owl:ObjectProperty ;
+  rdfs:label "has collateral asset" ;
+  rdfs:comment "Collateral assets linked to facility." .
+
+risk:onFacility a owl:ObjectProperty ;
+  rdfs:label "on facility" ;
+  rdfs:comment "Facility linked to exposure." .
+
+risk:latestValuation a owl:ObjectProperty ;
+  rdfs:label "latest valuation" ;
+  rdfs:comment "Latest valuation for exposure." .
+
+risk:latestAssetValuation a owl:ObjectProperty ;
+  rdfs:label "latest asset valuation" ;
+  rdfs:comment "Latest valuation for collateral asset." .
+
+risk:forCollateralAsset a owl:ObjectProperty ;
+  rdfs:label "for collateral asset" ;
+  rdfs:comment "Collateral asset associated with valuation." .
+
+risk:guaranteedFacility a owl:ObjectProperty ;
+  rdfs:label "guaranteed facility" ;
+  rdfs:comment "Facility guaranteed by guarantee instrument." .
+
+risk:relatedObligor a owl:ObjectProperty ;
+  rdfs:label "related obligor" ;
+  rdfs:comment "Obligor related to default event." .
+
+risk:ObligorShape a sh:NodeShape ;
+  sh:targetClass risk:Obligor ;
+  sh:property [ sh:path risk:obligorId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:legalName ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:hasRiskRating ; sh:class risk:Rating ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:hasExternalRating ; sh:class crm:Rating ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:hasFacility ; sh:class risk:Facility ; sh:minCount 0 ] ;
+  sh:property [ sh:path risk:hasDefaultEvent ; sh:class risk:DefaultEvent ; sh:minCount 0 ] ;
+  sh:property [ sh:path risk:legacyDefaultPath ; sh:class risk:DefaultEvent ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+risk:FacilityShape a sh:NodeShape ;
+  sh:targetClass risk:Facility ;
+  sh:property [ sh:path risk:facilityId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:borrower ; sh:class risk:Obligor ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:hasExposure ; sh:class risk:Exposure ; sh:minCount 0 ] ;
+  sh:property [ sh:path risk:hasCovenant ; sh:class risk:Covenant ; sh:minCount 0 ] ;
+  sh:property [ sh:path risk:hasGuarantee ; sh:class risk:Guarantee ; sh:minCount 0 ] ;
+  sh:property [ sh:path risk:hasCollateralAsset ; sh:class risk:CollateralAsset ; sh:minCount 0 ] .
+
+risk:ExposureShape a sh:NodeShape ;
+  sh:targetClass risk:Exposure ;
+  sh:property [ sh:path risk:exposureId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:notionalAmount ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:onFacility ; sh:class risk:Facility ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:latestValuation ; sh:class risk:Valuation ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+risk:CovenantShape a sh:NodeShape ;
+  sh:targetClass risk:Covenant ;
+  sh:property [ sh:path risk:covenantCode ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:covenantText ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:breachedOn ; sh:datatype xsd:dateTime ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+risk:CollateralAssetShape a sh:NodeShape ;
+  sh:targetClass risk:CollateralAsset ;
+  sh:property [ sh:path risk:assetId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:assetType ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:latestAssetValuation ; sh:class risk:Valuation ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+risk:ValuationShape a sh:NodeShape ;
+  sh:targetClass risk:Valuation ;
+  sh:property [ sh:path risk:valuationId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:appraisedAmount ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:forCollateralAsset ; sh:class risk:CollateralAsset ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+risk:GuaranteeShape a sh:NodeShape ;
+  sh:targetClass risk:Guarantee ;
+  sh:property [ sh:path risk:guaranteeId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:guarantorName ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:guaranteedFacility ; sh:class risk:Facility ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+risk:DefaultEventShape a sh:NodeShape ;
+  sh:targetClass risk:DefaultEvent ;
+  sh:property [ sh:path risk:defaultEventId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:eventTimestamp ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:relatedObligor ; sh:class risk:Obligor ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+risk:RiskRatingShape a sh:NodeShape ;
+  sh:targetClass risk:Rating ;
+  sh:property [ sh:path risk:ratingScore ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path risk:ratingGrade ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+crm:CrmRatingShape a sh:NodeShape ;
+  sh:targetClass crm:Rating ;
+  sh:property [ sh:path crm:crmRatingSource ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path crm:crmRatingCode ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .

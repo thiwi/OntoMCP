@@ -1,0 +1,250 @@
+@prefix rb: <http://example.com/retail#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+rb:Customer a owl:Class ;
+  rdfs:label "Customer" ;
+  rdfs:comment "A retail banking customer profile." .
+
+rb:Household a owl:Class ;
+  rdfs:label "Household" ;
+  rdfs:comment "Household grouping for family-level exposure views." .
+
+rb:CurrentAccount a owl:Class ;
+  rdfs:label "Current Account" ;
+  rdfs:comment "Transactional account for daily payment flows." .
+
+rb:SavingsAccount a owl:Class ;
+  rdfs:label "Savings Account" ;
+  rdfs:comment "Interest-bearing deposit account." .
+
+rb:Card a owl:Class ;
+  rdfs:label "Card" ;
+  rdfs:comment "Debit or credit card linked to an account." .
+
+rb:LoanContract a owl:Class ;
+  rdfs:label "Loan Contract" ;
+  rdfs:comment "Contractual lending agreement between bank and customer." .
+
+rb:Collateral a owl:Class ;
+  rdfs:label "Collateral" ;
+  rdfs:comment "Collateral object securing one or more loan contracts." .
+
+rb:Branch a owl:Class ;
+  rdfs:label "Branch" ;
+  rdfs:comment "Physical branch serving customers and accounts." .
+
+rb:KycProfile a owl:Class ;
+  rdfs:label "KYC Profile" ;
+  rdfs:comment "KYC and customer due diligence status." .
+
+rb:customerId a owl:DatatypeProperty ;
+  rdfs:label "customer id" ;
+  rdfs:comment "Stable customer identifier." .
+
+rb:fullName a owl:DatatypeProperty ;
+  rdfs:label "full name" ;
+  rdfs:comment "Legal full name." .
+
+rb:householdId a owl:DatatypeProperty ;
+  rdfs:label "household id" ;
+  rdfs:comment "Stable household identifier." .
+
+rb:accountId a owl:DatatypeProperty ;
+  rdfs:label "account id" ;
+  rdfs:comment "Stable account identifier." .
+
+rb:balance a owl:DatatypeProperty ;
+  rdfs:label "balance" ;
+  rdfs:comment "Account balance in minor units." .
+
+rb:interestRateBps a owl:DatatypeProperty ;
+  rdfs:label "interest rate bps" ;
+  rdfs:comment "Annual interest rate in basis points." .
+
+rb:cardId a owl:DatatypeProperty ;
+  rdfs:label "card id" ;
+  rdfs:comment "Stable card identifier." .
+
+rb:loanId a owl:DatatypeProperty ;
+  rdfs:label "loan id" ;
+  rdfs:comment "Stable loan contract identifier." .
+
+rb:principal a owl:DatatypeProperty ;
+  rdfs:label "principal" ;
+  rdfs:comment "Principal amount in minor units." .
+
+rb:collateralId a owl:DatatypeProperty ;
+  rdfs:label "collateral id" ;
+  rdfs:comment "Stable collateral identifier." .
+
+rb:estimatedValue a owl:DatatypeProperty ;
+  rdfs:label "estimated value" ;
+  rdfs:comment "Estimated collateral value in minor units." .
+
+rb:branchCode a owl:DatatypeProperty ;
+  rdfs:label "branch code" ;
+  rdfs:comment "Bank-internal branch code." .
+
+rb:branchName a owl:DatatypeProperty ;
+  rdfs:label "branch name" ;
+  rdfs:comment "Display name of the branch." .
+
+rb:profileId a owl:DatatypeProperty ;
+  rdfs:label "profile id" ;
+  rdfs:comment "Stable KYC profile identifier." .
+
+rb:riskScore a owl:DatatypeProperty ;
+  rdfs:label "risk score" ;
+  rdfs:comment "Internal KYC risk score." .
+
+rb:belongsToHousehold a owl:ObjectProperty ;
+  rdfs:label "belongs to household" ;
+  rdfs:comment "Household the customer is assigned to." .
+
+rb:hasCurrentAccount a owl:ObjectProperty ;
+  rdfs:label "has current account" ;
+  rdfs:comment "Current accounts owned by customer." .
+
+rb:hasSavingsAccount a owl:ObjectProperty ;
+  rdfs:label "has savings account" ;
+  rdfs:comment "Savings accounts owned by customer." .
+
+rb:hasKycProfile a owl:ObjectProperty ;
+  rdfs:label "has kyc profile" ;
+  rdfs:comment "Customer KYC profile." .
+
+rb:hasCard a owl:ObjectProperty ;
+  rdfs:label "has card" ;
+  rdfs:comment "Cards issued to customer." .
+
+rb:hasLoanContract a owl:ObjectProperty ;
+  rdfs:label "has loan contract" ;
+  rdfs:comment "Loans where customer is borrower." .
+
+rb:homeBranch a owl:ObjectProperty ;
+  rdfs:label "home branch" ;
+  rdfs:comment "Primary servicing branch for customer." .
+
+rb:legacyExposurePath a owl:ObjectProperty ;
+  rdfs:label "legacy exposure path" ;
+  rdfs:comment "Legacy derived relation not translated by MVP compiler." ;
+  owl:propertyChainAxiom ( rb:hasCurrentAccount rb:hasLoanContract ) .
+
+rb:primaryCustomer a owl:ObjectProperty ;
+  rdfs:label "primary customer" ;
+  rdfs:comment "Primary customer of household." .
+
+rb:member a owl:ObjectProperty ;
+  rdfs:label "member" ;
+  rdfs:comment "Household members." .
+
+rb:primaryHolder a owl:ObjectProperty ;
+  rdfs:label "primary holder" ;
+  rdfs:comment "Primary holder of account." .
+
+rb:issuedCard a owl:ObjectProperty ;
+  rdfs:label "issued card" ;
+  rdfs:comment "Cards linked to current account." .
+
+rb:branch a owl:ObjectProperty ;
+  rdfs:label "branch" ;
+  rdfs:comment "Branch that manages account." .
+
+rb:owner a owl:ObjectProperty ;
+  rdfs:label "owner" ;
+  rdfs:comment "Owner of savings account." .
+
+rb:holder a owl:ObjectProperty ;
+  rdfs:label "holder" ;
+  rdfs:comment "Card holder." .
+
+rb:linkedCurrentAccount a owl:ObjectProperty ;
+  rdfs:label "linked current account" ;
+  rdfs:comment "Current account linked to card." .
+
+rb:borrower a owl:ObjectProperty ;
+  rdfs:label "borrower" ;
+  rdfs:comment "Borrower party on loan." .
+
+rb:collateral a owl:ObjectProperty ;
+  rdfs:label "collateral" ;
+  rdfs:comment "Collateral securing loan." .
+
+rb:securesLoan a owl:ObjectProperty ;
+  rdfs:label "secures loan" ;
+  rdfs:comment "Loan secured by collateral." .
+
+rb:servesCustomer a owl:ObjectProperty ;
+  rdfs:label "serves customer" ;
+  rdfs:comment "Customers assigned to branch." .
+
+rb:reviewedCustomer a owl:ObjectProperty ;
+  rdfs:label "reviewed customer" ;
+  rdfs:comment "Customer associated with KYC profile." .
+
+rb:CustomerShape a sh:NodeShape ;
+  sh:targetClass rb:Customer ;
+  sh:property [ sh:path rb:customerId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:fullName ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:belongsToHousehold ; sh:class rb:Household ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:hasCurrentAccount ; sh:class rb:CurrentAccount ; sh:minCount 0 ] ;
+  sh:property [ sh:path rb:hasSavingsAccount ; sh:class rb:SavingsAccount ; sh:minCount 0 ] ;
+  sh:property [ sh:path rb:hasKycProfile ; sh:class rb:KycProfile ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:hasCard ; sh:class rb:Card ; sh:minCount 0 ] ;
+  sh:property [ sh:path rb:hasLoanContract ; sh:class rb:LoanContract ; sh:minCount 0 ] ;
+  sh:property [ sh:path rb:homeBranch ; sh:class rb:Branch ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:legacyExposurePath ; sh:class rb:LoanContract ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+rb:HouseholdShape a sh:NodeShape ;
+  sh:targetClass rb:Household ;
+  sh:property [ sh:path rb:householdId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:primaryCustomer ; sh:class rb:Customer ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:member ; sh:class rb:Customer ; sh:minCount 0 ] .
+
+rb:CurrentAccountShape a sh:NodeShape ;
+  sh:targetClass rb:CurrentAccount ;
+  sh:property [ sh:path rb:accountId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:balance ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:primaryHolder ; sh:class rb:Customer ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:issuedCard ; sh:class rb:Card ; sh:minCount 0 ] ;
+  sh:property [ sh:path rb:branch ; sh:class rb:Branch ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+rb:SavingsAccountShape a sh:NodeShape ;
+  sh:targetClass rb:SavingsAccount ;
+  sh:property [ sh:path rb:accountId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:interestRateBps ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:owner ; sh:class rb:Customer ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+rb:CardShape a sh:NodeShape ;
+  sh:targetClass rb:Card ;
+  sh:property [ sh:path rb:cardId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:holder ; sh:class rb:Customer ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:linkedCurrentAccount ; sh:class rb:CurrentAccount ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+rb:LoanContractShape a sh:NodeShape ;
+  sh:targetClass rb:LoanContract ;
+  sh:property [ sh:path rb:loanId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:principal ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:borrower ; sh:class rb:Customer ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:collateral ; sh:class rb:Collateral ; sh:minCount 0 ] .
+
+rb:CollateralShape a sh:NodeShape ;
+  sh:targetClass rb:Collateral ;
+  sh:property [ sh:path rb:collateralId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:estimatedValue ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:securesLoan ; sh:class rb:LoanContract ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+rb:BranchShape a sh:NodeShape ;
+  sh:targetClass rb:Branch ;
+  sh:property [ sh:path rb:branchCode ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:branchName ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:servesCustomer ; sh:class rb:Customer ; sh:minCount 0 ] .
+
+rb:KycProfileShape a sh:NodeShape ;
+  sh:targetClass rb:KycProfile ;
+  sh:property [ sh:path rb:profileId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:riskScore ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path rb:reviewedCustomer ; sh:class rb:Customer ; sh:minCount 0 ; sh:maxCount 1 ] .

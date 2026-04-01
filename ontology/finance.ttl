@@ -1,0 +1,167 @@
+@prefix finance: <http://example.com/finance#> .
+@prefix it: <http://example.com/it#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+finance:Person a owl:Class ;
+  rdfs:label "Person" ;
+  rdfs:comment "A banking customer profile." .
+
+finance:BankAccount a owl:Class ;
+  rdfs:label "Bank Account" ;
+  rdfs:comment "An account that belongs to exactly one person." .
+
+finance:Account a owl:Class ;
+  rdfs:label "Finance Account" ;
+  rdfs:comment "Finance namespace account entity." .
+
+it:Account a owl:Class ;
+  rdfs:label "IT Account" ;
+  rdfs:comment "IT namespace account entity." .
+
+finance:fullName a owl:DatatypeProperty ;
+  rdfs:label "full name" ;
+  rdfs:comment "Legal full name of the person." .
+
+finance:ownsAccount a owl:ObjectProperty ;
+  rdfs:label "owns account" ;
+  rdfs:comment "Accounts owned by the person." .
+
+finance:hasOwner a owl:ObjectProperty ;
+  rdfs:label "has owner" ;
+  rdfs:comment "Person that owns the account." .
+
+finance:accountNumber a owl:DatatypeProperty ;
+  rdfs:label "account number" ;
+  rdfs:comment "Primary integer account number." .
+
+finance:tag a owl:DatatypeProperty ;
+  rdfs:label "tag" ;
+  rdfs:comment "A classification tag." .
+
+finance:customerStatus a owl:DatatypeProperty ;
+  rdfs:label "customer status" ;
+  rdfs:comment "Lifecycle status of the customer profile." .
+
+finance:contactEmail a owl:DatatypeProperty ;
+  rdfs:label "contact email" ;
+  rdfs:comment "Primary email address for notifications." .
+
+finance:isVip a owl:DatatypeProperty ;
+  rdfs:label "is vip" ;
+  rdfs:comment "Marks whether the customer is treated as VIP." .
+
+finance:lastKycReviewAt a owl:DatatypeProperty ;
+  rdfs:label "last kyc review at" ;
+  rdfs:comment "Timestamp of the latest KYC review." .
+
+finance:availableBalance a owl:DatatypeProperty ;
+  rdfs:label "available balance" ;
+  rdfs:comment "Available account balance as decimal amount." .
+
+finance:riskClass a owl:DatatypeProperty ;
+  rdfs:label "risk class" ;
+  rdfs:comment "Risk class ID." .
+
+it:systemId a owl:DatatypeProperty ;
+  rdfs:label "system id" ;
+  rdfs:comment "Identifier in the IT system." .
+
+finance:unsupportedRiskLink a owl:ObjectProperty ;
+  rdfs:label "unsupported risk link" ;
+  rdfs:comment "Relation defined as property chain and unsupported in MVP translation." ;
+  owl:propertyChainAxiom ( finance:ownsAccount finance:hasOwner ) .
+
+finance:PersonShape a sh:NodeShape ;
+  sh:targetClass finance:Person ;
+  sh:property [
+    sh:path finance:fullName ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path finance:ownsAccount ;
+    sh:class finance:BankAccount ;
+    sh:minCount 0
+  ] ;
+  sh:property [
+    sh:path finance:customerStatus ;
+    sh:datatype xsd:string ;
+    sh:in ( "ACTIVE" "BLOCKED" "SUSPENDED" ) ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path finance:contactEmail ;
+    sh:datatype xsd:string ;
+    sh:pattern "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$" ;
+    sh:minLength 5 ;
+    sh:maxLength 254 ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path finance:isVip ;
+    sh:datatype xsd:boolean ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path finance:lastKycReviewAt ;
+    sh:datatype xsd:dateTime ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path finance:unsupportedRiskLink ;
+    sh:class finance:Account ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] .
+
+finance:BankAccountShape a sh:NodeShape ;
+  sh:targetClass finance:BankAccount ;
+  sh:property [
+    sh:path finance:accountNumber ;
+    sh:datatype xsd:integer ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path finance:hasOwner ;
+    sh:class finance:Person ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path finance:tag ;
+    sh:datatype xsd:string ;
+    sh:minCount 0
+  ] ;
+  sh:property [
+    sh:path finance:availableBalance ;
+    sh:datatype xsd:decimal ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] .
+
+finance:FinanceAccountShape a sh:NodeShape ;
+  sh:targetClass finance:Account ;
+  sh:property [
+    sh:path finance:riskClass ;
+    sh:datatype xsd:integer ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] .
+
+it:ITAccountShape a sh:NodeShape ;
+  sh:targetClass it:Account ;
+  sh:property [
+    sh:path it:systemId ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] .

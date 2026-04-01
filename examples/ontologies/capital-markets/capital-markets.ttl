@@ -1,0 +1,226 @@
+@prefix cm: <http://example.com/capital-markets#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cm:Trade a owl:Class ;
+  rdfs:label "Trade" ;
+  rdfs:comment "Executed trade in a capital-markets workflow." .
+
+cm:Instrument a owl:Class ;
+  rdfs:label "Instrument" ;
+  rdfs:comment "Traded instrument details." .
+
+cm:Counterparty a owl:Class ;
+  rdfs:label "Counterparty" ;
+  rdfs:comment "Legal counterparty in trade execution." .
+
+cm:Book a owl:Class ;
+  rdfs:label "Book" ;
+  rdfs:comment "Trading or risk book receiving trade bookings." .
+
+cm:Allocation a owl:Class ;
+  rdfs:label "Allocation" ;
+  rdfs:comment "Allocation split attached to a trade." .
+
+cm:SettlementInstruction a owl:Class ;
+  rdfs:label "Settlement Instruction" ;
+  rdfs:comment "Settlement instruction for a trade or leg." .
+
+cm:CashLeg a owl:Class ;
+  rdfs:label "Cash Leg" ;
+  rdfs:comment "Cash movement leg in settlement." .
+
+cm:SecurityLeg a owl:Class ;
+  rdfs:label "Security Leg" ;
+  rdfs:comment "Security movement leg in settlement." .
+
+cm:ClearingStatus a owl:Class ;
+  rdfs:label "Clearing Status" ;
+  rdfs:comment "Current clearing status of a trade." .
+
+cm:tradeId a owl:DatatypeProperty ;
+  rdfs:label "trade id" ;
+  rdfs:comment "Stable trade identifier." .
+
+cm:instrumentId a owl:DatatypeProperty ;
+  rdfs:label "instrument id" ;
+  rdfs:comment "Stable instrument identifier." .
+
+cm:productType a owl:DatatypeProperty ;
+  rdfs:label "product type" ;
+  rdfs:comment "Product taxonomy bucket." .
+
+cm:counterpartyId a owl:DatatypeProperty ;
+  rdfs:label "counterparty id" ;
+  rdfs:comment "Stable counterparty identifier." .
+
+cm:legalName a owl:DatatypeProperty ;
+  rdfs:label "legal name" ;
+  rdfs:comment "Registered legal name." .
+
+cm:bookCode a owl:DatatypeProperty ;
+  rdfs:label "book code" ;
+  rdfs:comment "Trading book code." .
+
+cm:allocationId a owl:DatatypeProperty ;
+  rdfs:label "allocation id" ;
+  rdfs:comment "Stable allocation identifier." .
+
+cm:instructionId a owl:DatatypeProperty ;
+  rdfs:label "instruction id" ;
+  rdfs:comment "Stable settlement instruction identifier." .
+
+cm:legId a owl:DatatypeProperty ;
+  rdfs:label "leg id" ;
+  rdfs:comment "Stable leg identifier." .
+
+cm:currency a owl:DatatypeProperty ;
+  rdfs:label "currency" ;
+  rdfs:comment "ISO currency code." .
+
+cm:cashAmount a owl:DatatypeProperty ;
+  rdfs:label "cash amount" ;
+  rdfs:comment "Cash amount in minor units." .
+
+cm:isin a owl:DatatypeProperty ;
+  rdfs:label "isin" ;
+  rdfs:comment "ISIN code for security leg." .
+
+cm:quantity a owl:DatatypeProperty ;
+  rdfs:label "quantity" ;
+  rdfs:comment "Security quantity in units." .
+
+cm:statusCode a owl:DatatypeProperty ;
+  rdfs:label "status code" ;
+  rdfs:comment "Clearing status code." .
+
+cm:lastUpdated a owl:DatatypeProperty ;
+  rdfs:label "last updated" ;
+  rdfs:comment "Timestamp of latest clearing update." .
+
+cm:hasInstrument a owl:ObjectProperty ;
+  rdfs:label "has instrument" ;
+  rdfs:comment "Instrument of the trade." .
+
+cm:hasCounterparty a owl:ObjectProperty ;
+  rdfs:label "has counterparty" ;
+  rdfs:comment "Counterparty of the trade." .
+
+cm:bookedIn a owl:ObjectProperty ;
+  rdfs:label "booked in" ;
+  rdfs:comment "Book receiving trade booking." .
+
+cm:hasAllocation a owl:ObjectProperty ;
+  rdfs:label "has allocation" ;
+  rdfs:comment "Allocations of the trade." .
+
+cm:hasSettlementInstruction a owl:ObjectProperty ;
+  rdfs:label "has settlement instruction" ;
+  rdfs:comment "Settlement instruction for trade." .
+
+cm:hasClearingStatus a owl:ObjectProperty ;
+  rdfs:label "has clearing status" ;
+  rdfs:comment "Clearing status of trade." .
+
+cm:hasCashLeg a owl:ObjectProperty ;
+  rdfs:label "has cash leg" ;
+  rdfs:comment "Cash legs of the trade." .
+
+cm:hasSecurityLeg a owl:ObjectProperty ;
+  rdfs:label "has security leg" ;
+  rdfs:comment "Security legs of the trade." .
+
+cm:legacyNettingPath a owl:ObjectProperty ;
+  rdfs:label "legacy netting path" ;
+  rdfs:comment "Legacy inferred netting relation not translated by MVP compiler." ;
+  owl:propertyChainAxiom ( cm:hasCounterparty cm:hasTrade ) .
+
+cm:hasTrade a owl:ObjectProperty ;
+  rdfs:label "has trade" ;
+  rdfs:comment "Trades associated to counterparty or book." .
+
+cm:containsTrade a owl:ObjectProperty ;
+  rdfs:label "contains trade" ;
+  rdfs:comment "Trades booked in a book." .
+
+cm:parentTrade a owl:ObjectProperty ;
+  rdfs:label "parent trade" ;
+  rdfs:comment "Parent trade for allocation." .
+
+cm:forTrade a owl:ObjectProperty ;
+  rdfs:label "for trade" ;
+  rdfs:comment "Trade linked to settlement instruction." .
+
+cm:cashLeg a owl:ObjectProperty ;
+  rdfs:label "cash leg" ;
+  rdfs:comment "Cash leg linked to settlement instruction." .
+
+cm:securityLeg a owl:ObjectProperty ;
+  rdfs:label "security leg" ;
+  rdfs:comment "Security leg linked to settlement instruction." .
+
+cm:inSettlementInstruction a owl:ObjectProperty ;
+  rdfs:label "in settlement instruction" ;
+  rdfs:comment "Settlement instruction containing this leg." .
+
+cm:TradeShape a sh:NodeShape ;
+  sh:targetClass cm:Trade ;
+  sh:property [ sh:path cm:tradeId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:hasInstrument ; sh:class cm:Instrument ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:hasCounterparty ; sh:class cm:Counterparty ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:bookedIn ; sh:class cm:Book ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:hasAllocation ; sh:class cm:Allocation ; sh:minCount 0 ] ;
+  sh:property [ sh:path cm:hasSettlementInstruction ; sh:class cm:SettlementInstruction ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:hasClearingStatus ; sh:class cm:ClearingStatus ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:hasCashLeg ; sh:class cm:CashLeg ; sh:minCount 0 ] ;
+  sh:property [ sh:path cm:hasSecurityLeg ; sh:class cm:SecurityLeg ; sh:minCount 0 ] ;
+  sh:property [ sh:path cm:legacyNettingPath ; sh:class cm:Trade ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+cm:InstrumentShape a sh:NodeShape ;
+  sh:targetClass cm:Instrument ;
+  sh:property [ sh:path cm:instrumentId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:productType ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+cm:CounterpartyShape a sh:NodeShape ;
+  sh:targetClass cm:Counterparty ;
+  sh:property [ sh:path cm:counterpartyId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:legalName ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:hasTrade ; sh:class cm:Trade ; sh:minCount 0 ] .
+
+cm:BookShape a sh:NodeShape ;
+  sh:targetClass cm:Book ;
+  sh:property [ sh:path cm:bookCode ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:containsTrade ; sh:class cm:Trade ; sh:minCount 0 ] .
+
+cm:AllocationShape a sh:NodeShape ;
+  sh:targetClass cm:Allocation ;
+  sh:property [ sh:path cm:allocationId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:parentTrade ; sh:class cm:Trade ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+cm:SettlementInstructionShape a sh:NodeShape ;
+  sh:targetClass cm:SettlementInstruction ;
+  sh:property [ sh:path cm:instructionId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:forTrade ; sh:class cm:Trade ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:cashLeg ; sh:class cm:CashLeg ; sh:minCount 0 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:securityLeg ; sh:class cm:SecurityLeg ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+cm:CashLegShape a sh:NodeShape ;
+  sh:targetClass cm:CashLeg ;
+  sh:property [ sh:path cm:legId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:currency ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:cashAmount ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:inSettlementInstruction ; sh:class cm:SettlementInstruction ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+cm:SecurityLegShape a sh:NodeShape ;
+  sh:targetClass cm:SecurityLeg ;
+  sh:property [ sh:path cm:legId ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:isin ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:quantity ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:inSettlementInstruction ; sh:class cm:SettlementInstruction ; sh:minCount 0 ; sh:maxCount 1 ] .
+
+cm:ClearingStatusShape a sh:NodeShape ;
+  sh:targetClass cm:ClearingStatus ;
+  sh:property [ sh:path cm:statusCode ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+  sh:property [ sh:path cm:lastUpdated ; sh:datatype xsd:dateTime ; sh:minCount 1 ; sh:maxCount 1 ] .

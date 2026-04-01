@@ -1,0 +1,15 @@
+{
+  "rootEntity": "Customer",
+  "validPayload": {
+    "customerId": "CUST-1001",
+    "fullName": "Jane Doe",
+    "hasKycProfile": {
+      "profileId": "KYC-2001",
+      "riskScore": 3
+    }
+  },
+  "invalidPayload": {
+    "customerId": 1001,
+    "hasKycProfile": []
+  }
+}
