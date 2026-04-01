@@ -68,7 +68,7 @@ describe("example ontologies", () => {
   it("cleanup: playground directory and references are removed", () => {
     expect(existsSync(path.resolve(repoRoot, "playground"))).toBe(false);
 
-    const scan = spawnSync(
+    const ripgrepScan = spawnSync(
       "rg",
       [
         "-n",
@@ -84,6 +84,29 @@ describe("example ontologies", () => {
       { cwd: repoRoot, encoding: "utf8" },
     );
 
-    expect(scan.status).toBe(1);
+    if (ripgrepScan.status !== null) {
+      expect(ripgrepScan.status).toBe(1);
+      return;
+    }
+
+    const gitGrepScan = spawnSync(
+      "git",
+      [
+        "grep",
+        "-n",
+        "playground",
+        "--",
+        "src",
+        "ontology",
+        "examples",
+        "docs",
+        ".vscode",
+        "package.json",
+        "tsconfig.json",
+      ],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+
+    expect(gitGrepScan.status).toBe(1);
   });
 });
