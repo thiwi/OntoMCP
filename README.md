@@ -5,6 +5,8 @@
 
 Ontology Model Context Protocol Server for deterministic, ontology-driven DTO/schema generation.
 
+![OntoMCP Logo](docs/logo.png)
+
 ## Why
 
 LLM coding agents often invent data models that violate enterprise ontology rules.  
