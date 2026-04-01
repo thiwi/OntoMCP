@@ -1,0 +1,7 @@
+# Global owners
+* @thiwi
+
+# Core paths
+/src/ @thiwi
+/test/ @thiwi
+/docs/ @thiwi

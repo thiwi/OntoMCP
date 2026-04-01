@@ -1,5 +1,7 @@
 # Contributing to OntoMCP
 
+By participating, you agree to follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
+
 ## Setup
 
 ```bash
@@ -20,6 +22,8 @@ npm test
    - problem statement,
    - design notes,
    - test evidence.
+
+Use the pull request template and keep PRs small and reviewable.
 
 ## Coding standards
 
@@ -44,3 +48,5 @@ When filing a bug, include:
 - tool call payload,
 - expected vs actual result,
 - versions (`node`, `npm`, commit SHA).
+
+For vulnerabilities, follow [SECURITY.md](./SECURITY.md) and do not create public issues.

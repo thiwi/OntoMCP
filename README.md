@@ -1,5 +1,8 @@
 # OntoMCP
 
+[![CI](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml/badge.svg)](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 Ontology Model Context Protocol Server for deterministic, ontology-driven DTO/schema generation.
 
 ## Why
@@ -78,6 +81,8 @@ Coverage target is configured in `vitest.config.ts`.
 - [Improvement roadmap](./docs/ontomcp-improvements.md)
 - [Developer guide](./docs/development.md)
 - [MCP usage guide](./docs/mcp-usage.md)
+- [Architecture](./docs/architecture.md)
+- [Maintainer operations](./docs/maintainers.md)
 
 ## Example ontology packs
 
@@ -92,6 +97,13 @@ They are **not** auto-loaded unless `ONTOLOGY_DIR` points to one of them.
 ## Contributing
 
 Please read [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Community and governance
+
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Security policy](./SECURITY.md)
+- [Support](./SUPPORT.md)
+- [Changelog](./CHANGELOG.md)
 
 ## License
 
