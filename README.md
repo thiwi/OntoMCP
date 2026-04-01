@@ -32,7 +32,7 @@ npm run start
 
 Default ontology path:
 
-- `ONTOLOGY_DIR=<repo>/ontology`
+- `ONTOLOGY_DIR=<repo>/examples/ontologies/retail-banking`
 
 Override with:
 
@@ -52,7 +52,7 @@ Create/update `.vscode/mcp.json`:
       "command": "node",
       "args": ["/absolute/path/to/OntoMCP/dist/index.js"],
       "env": {
-        "ONTOLOGY_DIR": "/absolute/path/to/OntoMCP/ontology"
+        "ONTOLOGY_DIR": "/absolute/path/to/OntoMCP/examples/ontologies/retail-banking"
       }
     }
   }
@@ -78,7 +78,6 @@ Coverage target is configured in `vitest.config.ts`.
 
 ## Documentation
 
-- [Improvement roadmap](./docs/ontomcp-improvements.md)
 - [Developer guide](./docs/development.md)
 - [MCP usage guide](./docs/mcp-usage.md)
 - [Architecture](./docs/architecture.md)

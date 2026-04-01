@@ -82,7 +82,7 @@ describe("MCP tool integration", () => {
     };
 
     expect(structured.packs).toHaveLength(1);
-    expect(structured.packs[0]?.pack_id).toBe("ontology");
+    expect(structured.packs[0]?.pack_id).toBe("fixtures");
     expect(structured.packs[0]?.ontology_dir).toBe(ontologyDir);
     expect(structured.packs[0]?.entity_count).toBe(4);
     expect(structured.packs[0]?.warning_count).toBeGreaterThan(0);
