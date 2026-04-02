@@ -50,6 +50,7 @@ node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings=true
 Lint UX notes:
 
 - unknown options fail with exit code `2` and show `Unknown option: ...`
+- `ontomcp lint --help` works as a short-circuit (also when combined with other lint args)
 - fatal lint failures print `Lint failed: ...` (stacktraces only with `ONTOMCP_DEBUG=1`)
 - PASS/FAIL is colorized automatically in TTY terminals
 

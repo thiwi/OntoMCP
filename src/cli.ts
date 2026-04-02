@@ -15,6 +15,7 @@ interface CliIO {
   stdout: (message: string) => void;
   stderr: (message: string) => void;
   isTTY: boolean;
+  env: NodeJS.ProcessEnv;
 }
 
 interface CliDependencies {
@@ -27,6 +28,7 @@ const defaultIo: CliIO = {
   stdout: console.log,
   stderr: console.error,
   isTTY: Boolean(process.stdout.isTTY),
+  env: process.env,
 };
 
 const defaultDependencies: CliDependencies = {
@@ -77,7 +79,7 @@ function parseBooleanFromFlag(value: string): boolean | undefined {
 }
 
 function parseLintArguments(args: string[]): LintParseResult {
-  if (args.length === 1 && (args[0] === "--help" || args[0] === "help")) {
+  if (args.some((value) => value === "--help" || value === "-h" || value === "help")) {
     return { kind: "help" };
   }
 
@@ -85,13 +87,6 @@ function parseLintArguments(args: string[]): LintParseResult {
   const positionals: string[] = [];
 
   for (const arg of args) {
-    if (arg === "--help" || arg === "help") {
-      return {
-        kind: "error",
-        message: "The --help option cannot be combined with other lint arguments.",
-      };
-    }
-
     if (arg === "--fail-on-warnings") {
       failOnWarnings = true;
       continue;
@@ -134,7 +129,7 @@ function parseLintArguments(args: string[]): LintParseResult {
   };
 }
 
-function debugModeEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+function debugModeEnabled(env: NodeJS.ProcessEnv): boolean {
   const value = env.ONTOMCP_DEBUG;
   if (!value) {
     return false;
@@ -183,7 +178,7 @@ export async function executeCli(
         deps.renderLintReport(lintResult, {
           colorMode: "auto",
           isTTY: io.isTTY,
-          noColor: Boolean(process.env.NO_COLOR),
+          noColor: Boolean(io.env.NO_COLOR),
         }),
       );
       return lintResult.exit_code;
@@ -191,7 +186,7 @@ export async function executeCli(
       const message = error instanceof Error ? error.message : String(error);
       io.stderr(`Lint failed: ${message}`);
 
-      if (debugModeEnabled()) {
+      if (debugModeEnabled(io.env)) {
         const stack = error instanceof Error ? error.stack : undefined;
         if (stack && stack.length > 0) {
           io.stderr(stack);

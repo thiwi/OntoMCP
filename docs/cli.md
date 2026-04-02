@@ -22,6 +22,7 @@ Runs ontology lint checks with warning sources from:
 When fail-on-warnings is enabled, the command exits with code `1` if warnings are found.
 
 Unknown options (for example `--bad-flag`) fail with exit code `2` and print an explicit `Unknown option: ...` message.
+`--help` short-circuits lint argument parsing and always prints usage, even when combined with other lint arguments.
 
 ## Exit Codes
 
@@ -57,6 +58,10 @@ ontomcp lint /absolute/path/to/ontology-pack --fail-on-warnings
 # Explicit boolean flag forms
 ontomcp lint /absolute/path/to/ontology-pack --fail-on-warnings=true
 ontomcp lint /absolute/path/to/ontology-pack --fail-on-warnings=false
+
+# Help can be requested with or without additional lint args
+ontomcp lint --help
+ontomcp lint /absolute/path/to/ontology-pack --help
 ```
 
 ## GitHub Actions Example

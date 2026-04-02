@@ -18,12 +18,27 @@ function emptyLintResult(exitCode: 0 | 1): LintResult {
   };
 }
 
+function createIo(overrides?: {
+  stdout?: (value: string) => void;
+  stderr?: (value: string) => void;
+  isTTY?: boolean;
+  env?: NodeJS.ProcessEnv;
+}) {
+  return {
+    stdout: () => {},
+    stderr: () => {},
+    isTTY: false,
+    env: {},
+    ...overrides,
+  };
+}
+
 describe("executeCli", () => {
   it("returns usage error on invalid command", async () => {
     const stderr: string[] = [];
     const code = await executeCli(
       ["nope"],
-      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+      createIo({ stderr: (value) => stderr.push(value) }),
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -39,7 +54,7 @@ describe("executeCli", () => {
     const stderr: string[] = [];
     const code = await executeCli(
       ["lint"],
-      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+      createIo({ stderr: (value) => stderr.push(value) }),
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -58,11 +73,9 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       ["lint", "./ontology", "--fail-on-warnings"],
-      {
+      createIo({
         stdout: (value) => stdout.push(value),
-        stderr: () => {},
-        isTTY: false,
-      },
+      }),
       {
         startServer: vi.fn(async () => {}),
         runLint: runLintMock,
@@ -79,7 +92,7 @@ describe("executeCli", () => {
       expect.objectContaining({
         colorMode: "auto",
         isTTY: false,
-        noColor: Boolean(process.env.NO_COLOR),
+        noColor: false,
       }),
     );
     expect(renderMock).toHaveBeenCalledTimes(1);
@@ -91,7 +104,7 @@ describe("executeCli", () => {
     const stderr: string[] = [];
     const code = await executeCli(
       ["lint", "./ontology", "--bad-flag"],
-      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+      createIo({ stderr: (value) => stderr.push(value) }),
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -108,7 +121,7 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       ["--help"],
-      { stdout: (value) => stdout.push(value), stderr: () => {}, isTTY: false },
+      createIo({ stdout: (value) => stdout.push(value) }),
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -125,7 +138,7 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       [],
-      { stdout: () => {}, stderr: () => {}, isTTY: false },
+      createIo(),
       {
         startServer: startMock,
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -142,7 +155,7 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       ["start", "extra"],
-      { stdout: () => {}, stderr: () => {}, isTTY: false },
+      createIo(),
       {
         startServer: startMock,
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -160,7 +173,7 @@ describe("executeCli", () => {
 
     const codeTrue = await executeCli(
       ["lint", "./ontology", "--fail-on-warnings=true"],
-      { stdout: () => {}, stderr: () => {}, isTTY: false },
+      createIo(),
       {
         startServer: vi.fn(async () => {}),
         runLint: runLintTrue,
@@ -170,7 +183,7 @@ describe("executeCli", () => {
 
     const codeFalse = await executeCli(
       ["lint", "./ontology", "--fail-on-warnings=false"],
-      { stdout: () => {}, stderr: () => {}, isTTY: false },
+      createIo(),
       {
         startServer: vi.fn(async () => {}),
         runLint: runLintFalse,
@@ -194,7 +207,7 @@ describe("executeCli", () => {
     const stderr: string[] = [];
     const code = await executeCli(
       ["lint", "./ontology", "--fail-on-warnings=maybe"],
-      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+      createIo({ stderr: (value) => stderr.push(value) }),
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -210,7 +223,7 @@ describe("executeCli", () => {
     const stdout: string[] = [];
     const code = await executeCli(
       ["lint", "--help"],
-      { stdout: (value) => stdout.push(value), stderr: () => {}, isTTY: false },
+      createIo({ stdout: (value) => stdout.push(value) }),
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -222,6 +235,24 @@ describe("executeCli", () => {
     expect(stdout[0]).toContain("Usage:");
   });
 
+  it("short-circuits to lint help when --help is combined with other lint args", async () => {
+    const stdout: string[] = [];
+    const runLintMock = vi.fn(async () => emptyLintResult(0));
+    const code = await executeCli(
+      ["lint", "./ontology", "--help", "--fail-on-warnings"],
+      createIo({ stdout: (value) => stdout.push(value) }),
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: runLintMock,
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
+
+    expect(code).toBe(0);
+    expect(runLintMock).not.toHaveBeenCalled();
+    expect(stdout[0]).toContain("Usage:");
+  });
+
   it("returns friendly lint failure message without stack by default", async () => {
     const stderr: string[] = [];
     const err = new Error("boom");
@@ -229,7 +260,7 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       ["lint", "./ontology"],
-      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+      createIo({ stderr: (value) => stderr.push(value) }),
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => {
@@ -245,35 +276,28 @@ describe("executeCli", () => {
   });
 
   it("prints stacktrace in debug mode for lint failures", async () => {
-    const originalDebug = process.env.ONTOMCP_DEBUG;
     const stderr: string[] = [];
     const err = new Error("debug-boom");
     err.stack = "Error: debug-boom\nat fake-debug:2:2";
 
-    try {
-      process.env.ONTOMCP_DEBUG = "1";
-      const code = await executeCli(
-        ["lint", "./ontology"],
-        { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
-        {
-          startServer: vi.fn(async () => {}),
-          runLint: vi.fn(async () => {
-            throw err;
-          }),
-          renderLintReport: vi.fn(() => ""),
-        },
-      );
+    const code = await executeCli(
+      ["lint", "./ontology"],
+      createIo({
+        stderr: (value) => stderr.push(value),
+        env: { ONTOMCP_DEBUG: "1" },
+      }),
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: vi.fn(async () => {
+          throw err;
+        }),
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
 
-      expect(code).toBe(1);
-      expect(stderr[0]).toBe("Lint failed: debug-boom");
-      expect(stderr.some((value) => value.includes("at fake-debug:2:2"))).toBe(true);
-    } finally {
-      if (originalDebug === undefined) {
-        delete process.env.ONTOMCP_DEBUG;
-      } else {
-        process.env.ONTOMCP_DEBUG = originalDebug;
-      }
-    }
+    expect(code).toBe(1);
+    expect(stderr[0]).toBe("Lint failed: debug-boom");
+    expect(stderr.some((value) => value.includes("at fake-debug:2:2"))).toBe(true);
   });
 
   it("main exits with non-zero code for usage errors", async () => {
