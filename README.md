@@ -48,9 +48,6 @@ node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings
 
 # explicit boolean forms are also supported
 node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings=true
-
-# CLI binary form
-npx ontomcp lint /absolute/path/to/ontology-pack --fail-on-warnings
 ```
 
 Lint UX notes:

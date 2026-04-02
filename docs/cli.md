@@ -9,7 +9,6 @@ cd /absolute/path/to/OntoMCP
 npm install
 npm run build
 node dist/cli.js lint /absolute/path/to/ontology-pack
-npx ontomcp lint /absolute/path/to/ontology-pack
 ```
 
 ## Commands
