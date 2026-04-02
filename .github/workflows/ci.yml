@@ -30,6 +30,21 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Build
+        run: npm run build
+
+      - name: Ontology lint (clean fixture, must pass)
+        run: node dist/cli.js lint ./test/lint-fixtures/clean --fail-on-warnings
+
+      - name: Ontology lint (example warning path, expected fail)
+        run: |
+          if node dist/cli.js lint ./examples/ontologies/retail-banking --fail-on-warnings; then
+            echo "Expected lint to fail for retail-banking, but it passed."
+            exit 1
+          else
+            echo "Expected lint failure observed for retail-banking."
+          fi
+
       - name: Unit tests
         run: npm test
 

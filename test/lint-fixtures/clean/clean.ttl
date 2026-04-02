@@ -1,0 +1,58 @@
+@prefix clean: <http://example.com/clean#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+clean:Person a owl:Class ;
+  rdfs:label "Person" ;
+  rdfs:comment "A simple warning-free customer entity." .
+
+clean:Account a owl:Class ;
+  rdfs:label "Account" ;
+  rdfs:comment "A simple warning-free account entity." .
+
+clean:fullName a owl:DatatypeProperty ;
+  rdfs:label "full name" ;
+  rdfs:comment "Legal full name of the person." .
+
+clean:ownsAccount a owl:ObjectProperty ;
+  rdfs:label "owns account" ;
+  rdfs:comment "Accounts owned by the person." .
+
+clean:accountId a owl:DatatypeProperty ;
+  rdfs:label "account id" ;
+  rdfs:comment "Stable account identifier." .
+
+clean:hasOwner a owl:ObjectProperty ;
+  rdfs:label "has owner" ;
+  rdfs:comment "Owner of the account." .
+
+clean:PersonShape a sh:NodeShape ;
+  sh:targetClass clean:Person ;
+  sh:property [
+    sh:path clean:fullName ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path clean:ownsAccount ;
+    sh:class clean:Account ;
+    sh:minCount 0
+  ] .
+
+clean:AccountShape a sh:NodeShape ;
+  sh:targetClass clean:Account ;
+  sh:property [
+    sh:path clean:accountId ;
+    sh:datatype xsd:integer ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path clean:hasOwner ;
+    sh:class clean:Person ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] .

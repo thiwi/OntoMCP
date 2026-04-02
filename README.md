@@ -3,18 +3,19 @@
 [![CI](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml/badge.svg)](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-Ontology Model Context Protocol Server for deterministic, ontology-driven DTO/schema generation.
+Ontology Model Context Protocol (MCP) server and CLI linter for deterministic, ontology-driven schema generation and validation.
 
 <img src="docs/logo.png" alt="OntoMCP Logo" width="300" height="300" style="max-width: 300px; max-height: 300px;" />
 
 ## Why
 
 LLM coding agents often invent data models that violate enterprise ontology rules.  
-OntoMCP provides a local MCP server that:
+OntoMCP provides:
 
 - ingests OWL/RDFS/SHACL Turtle files,
 - compiles deterministic JSON Schema + Zod snippets,
-- validates payloads with AJV against compiled ontology schemas.
+- validates payloads with AJV against compiled ontology schemas,
+- lints ontology packs from the CLI (optionally fail-on-warnings for CI gates).
 
 ## Features
 
@@ -23,6 +24,7 @@ OntoMCP provides a local MCP server that:
 - `validate_payload_against_ontology`
 - `list_ontology_packs`
 - `get_entity_graph_context`
+- `ontomcp lint <ontologyDir> [--fail-on-warnings]`
 
 ## Quickstart
 
@@ -30,6 +32,16 @@ OntoMCP provides a local MCP server that:
 npm install
 npm run build
 npm run start
+```
+
+CLI lint examples:
+
+```bash
+# report warnings
+node dist/cli.js lint /absolute/path/to/ontology-pack
+
+# fail CI on warnings
+node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings
 ```
 
 Default ontology path:
@@ -81,6 +93,7 @@ Coverage target is configured in `vitest.config.ts`.
 ## Documentation
 
 - [Developer guide](./docs/development.md)
+- [CLI guide](./docs/cli.md)
 - [MCP usage guide](./docs/mcp-usage.md)
 - [Architecture](./docs/architecture.md)
 - [Maintainer operations](./docs/maintainers.md)

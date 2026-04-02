@@ -1,14 +1,18 @@
 {
   "name": "ontomcp",
   "version": "1.0.0",
-  "description": "Ontology Model Context Protocol Server (OntoMCP) for deterministic ontology-driven schema generation.",
+  "description": "Ontology Model Context Protocol (MCP) server and CLI linter for deterministic ontology-driven schema generation and validation.",
   "main": "dist/index.js",
+  "bin": {
+    "ontomcp": "dist/cli.js"
+  },
   "scripts": {
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
+    "lint:ontology": "node dist/cli.js lint ./test/lint-fixtures/clean --fail-on-warnings",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "keywords": [

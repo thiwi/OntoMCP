@@ -1,5 +1,7 @@
 # MCP Usage Guide
 
+For CLI startup/lint workflows, see [CLI guide](./cli.md).
+
 ## Available tools
 
 ### `list_domain_entities`
