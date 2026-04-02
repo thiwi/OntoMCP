@@ -37,8 +37,6 @@ npm run build
 npm run start
 ```
 
-This works without publishing to npm.
-
 CLI lint examples:
 
 ```bash
@@ -50,11 +48,8 @@ node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings
 
 # explicit boolean forms are also supported
 node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings=true
-```
 
-If/when the package is published to npm, you can use:
-
-```bash
+# CLI binary form
 npx ontomcp lint /absolute/path/to/ontology-pack --fail-on-warnings
 ```
 

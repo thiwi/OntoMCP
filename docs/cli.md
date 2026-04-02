@@ -4,22 +4,13 @@ OntoMCP ships with a CLI entrypoint that supports server startup and ontology li
 
 ## How To Run The CLI
 
-### Option A: Run from a source checkout (no npm publish required)
-
 ```bash
 cd /absolute/path/to/OntoMCP
 npm install
 npm run build
 node dist/cli.js lint /absolute/path/to/ontology-pack
-```
-
-### Option B: Run via npm (`npx`) after package publish
-
-```bash
 npx ontomcp lint /absolute/path/to/ontology-pack
 ```
-
-Use option B only when a public npm release exists for the package name/version you target.
 
 ## Commands
 
