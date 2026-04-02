@@ -23,7 +23,7 @@ describe("executeCli", () => {
     const stderr: string[] = [];
     const code = await executeCli(
       ["nope"],
-      { stdout: () => {}, stderr: (value) => stderr.push(value) },
+      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -36,9 +36,10 @@ describe("executeCli", () => {
   });
 
   it("returns usage error when lint arguments are missing", async () => {
+    const stderr: string[] = [];
     const code = await executeCli(
       ["lint"],
-      { stdout: () => {}, stderr: () => {} },
+      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -47,6 +48,7 @@ describe("executeCli", () => {
     );
 
     expect(code).toBe(2);
+    expect(stderr[0]).toContain("Missing required argument");
   });
 
   it("calls lint runner and returns lint exit code", async () => {
@@ -59,6 +61,7 @@ describe("executeCli", () => {
       {
         stdout: (value) => stdout.push(value),
         stderr: () => {},
+        isTTY: false,
       },
       {
         startServer: vi.fn(async () => {}),
@@ -71,15 +74,24 @@ describe("executeCli", () => {
       ontologyDir: "./ontology",
       failOnWarnings: true,
     });
+    expect(renderMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        colorMode: "auto",
+        isTTY: false,
+        noColor: Boolean(process.env.NO_COLOR),
+      }),
+    );
     expect(renderMock).toHaveBeenCalledTimes(1);
     expect(stdout).toEqual(["lint-report"]);
     expect(code).toBe(1);
   });
 
   it("returns usage error for unknown lint flag", async () => {
+    const stderr: string[] = [];
     const code = await executeCli(
       ["lint", "./ontology", "--bad-flag"],
-      { stdout: () => {}, stderr: () => {} },
+      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -88,6 +100,7 @@ describe("executeCli", () => {
     );
 
     expect(code).toBe(2);
+    expect(stderr[0]).toContain("Unknown option: --bad-flag");
   });
 
   it("prints help text and returns success", async () => {
@@ -95,7 +108,7 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       ["--help"],
-      { stdout: (value) => stdout.push(value), stderr: () => {} },
+      { stdout: (value) => stdout.push(value), stderr: () => {}, isTTY: false },
       {
         startServer: vi.fn(async () => {}),
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -112,7 +125,7 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       [],
-      { stdout: () => {}, stderr: () => {} },
+      { stdout: () => {}, stderr: () => {}, isTTY: false },
       {
         startServer: startMock,
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -129,7 +142,7 @@ describe("executeCli", () => {
 
     const code = await executeCli(
       ["start", "extra"],
-      { stdout: () => {}, stderr: () => {} },
+      { stdout: () => {}, stderr: () => {}, isTTY: false },
       {
         startServer: startMock,
         runLint: vi.fn(async () => emptyLintResult(0)),
@@ -139,6 +152,128 @@ describe("executeCli", () => {
 
     expect(startMock).not.toHaveBeenCalled();
     expect(code).toBe(2);
+  });
+
+  it("supports --fail-on-warnings=true and --fail-on-warnings=false", async () => {
+    const runLintTrue = vi.fn(async () => emptyLintResult(0));
+    const runLintFalse = vi.fn(async () => emptyLintResult(0));
+
+    const codeTrue = await executeCli(
+      ["lint", "./ontology", "--fail-on-warnings=true"],
+      { stdout: () => {}, stderr: () => {}, isTTY: false },
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: runLintTrue,
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
+
+    const codeFalse = await executeCli(
+      ["lint", "./ontology", "--fail-on-warnings=false"],
+      { stdout: () => {}, stderr: () => {}, isTTY: false },
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: runLintFalse,
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
+
+    expect(codeTrue).toBe(0);
+    expect(codeFalse).toBe(0);
+    expect(runLintTrue).toHaveBeenCalledWith({
+      ontologyDir: "./ontology",
+      failOnWarnings: true,
+    });
+    expect(runLintFalse).toHaveBeenCalledWith({
+      ontologyDir: "./ontology",
+      failOnWarnings: false,
+    });
+  });
+
+  it("returns usage error for invalid --fail-on-warnings value", async () => {
+    const stderr: string[] = [];
+    const code = await executeCli(
+      ["lint", "./ontology", "--fail-on-warnings=maybe"],
+      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: vi.fn(async () => emptyLintResult(0)),
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
+
+    expect(code).toBe(2);
+    expect(stderr[0]).toContain("Invalid value for --fail-on-warnings: maybe");
+  });
+
+  it("shows lint help and returns success", async () => {
+    const stdout: string[] = [];
+    const code = await executeCli(
+      ["lint", "--help"],
+      { stdout: (value) => stdout.push(value), stderr: () => {}, isTTY: false },
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: vi.fn(async () => emptyLintResult(0)),
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
+
+    expect(code).toBe(0);
+    expect(stdout[0]).toContain("Usage:");
+  });
+
+  it("returns friendly lint failure message without stack by default", async () => {
+    const stderr: string[] = [];
+    const err = new Error("boom");
+    err.stack = "Error: boom\nat fake:1:1";
+
+    const code = await executeCli(
+      ["lint", "./ontology"],
+      { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: vi.fn(async () => {
+          throw err;
+        }),
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
+
+    expect(code).toBe(1);
+    expect(stderr[0]).toBe("Lint failed: boom");
+    expect(stderr.some((value) => value.includes("at fake:1:1"))).toBe(false);
+  });
+
+  it("prints stacktrace in debug mode for lint failures", async () => {
+    const originalDebug = process.env.ONTOMCP_DEBUG;
+    const stderr: string[] = [];
+    const err = new Error("debug-boom");
+    err.stack = "Error: debug-boom\nat fake-debug:2:2";
+
+    try {
+      process.env.ONTOMCP_DEBUG = "1";
+      const code = await executeCli(
+        ["lint", "./ontology"],
+        { stdout: () => {}, stderr: (value) => stderr.push(value), isTTY: false },
+        {
+          startServer: vi.fn(async () => {}),
+          runLint: vi.fn(async () => {
+            throw err;
+          }),
+          renderLintReport: vi.fn(() => ""),
+        },
+      );
+
+      expect(code).toBe(1);
+      expect(stderr[0]).toBe("Lint failed: debug-boom");
+      expect(stderr.some((value) => value.includes("at fake-debug:2:2"))).toBe(true);
+    } finally {
+      if (originalDebug === undefined) {
+        delete process.env.ONTOMCP_DEBUG;
+      } else {
+        process.env.ONTOMCP_DEBUG = originalDebug;
+      }
+    }
   });
 
   it("main exits with non-zero code for usage errors", async () => {

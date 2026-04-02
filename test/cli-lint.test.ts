@@ -44,7 +44,7 @@ describe("runLint", () => {
       failOnWarnings: false,
     });
 
-    const report = renderLintReport(result);
+    const report = renderLintReport(result, { colorMode: "never" });
     expect(report).toContain("OntoMCP Lint Report");
     expect(report).toContain(`Ontology directory: ${lintCleanOntologyDir}`);
     expect(report).toContain("Summary");
@@ -62,7 +62,7 @@ describe("runLint", () => {
     expect(result.ingest_entity_warnings.length).toBeGreaterThan(0);
     expect(result.warnings.some((warning) => warning.scope === "ingest_entity")).toBe(true);
 
-    const report = renderLintReport(result);
+    const report = renderLintReport(result, { colorMode: "never" });
     expect(report).toContain("Ingest warnings (entity)");
     expect(report).toContain("Summary");
     expect(report).toContain("- Status: PASS");
@@ -74,7 +74,7 @@ describe("runLint", () => {
       failOnWarnings: true,
     });
 
-    const report = renderLintReport(result);
+    const report = renderLintReport(result, { colorMode: "never" });
     expect(report).toContain("Ingest warnings (property)");
     expect(report).toContain("Compile warnings (by root entity)");
     expect(report).toContain("- Status: FAIL");
@@ -90,5 +90,53 @@ describe("runLint", () => {
     expect(result.ingest_property_warnings[0]?.property_name).toBe("badProp");
     expect(result.ingest_property_warnings[1]?.property_name).toBe("badPropB");
     expect(result.warnings.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("colorizes PASS/FAIL in auto mode with TTY and disables color when NO_COLOR is set", async () => {
+    const passResult = await runLint({
+      ontologyDir: lintCleanOntologyDir,
+      failOnWarnings: false,
+    });
+    const failResult = await runLint({
+      ontologyDir,
+      failOnWarnings: true,
+    });
+
+    const passWithColor = renderLintReport(passResult, {
+      colorMode: "auto",
+      isTTY: true,
+      noColor: false,
+    });
+    const failWithColor = renderLintReport(failResult, {
+      colorMode: "auto",
+      isTTY: true,
+      noColor: false,
+    });
+    const failWithoutColor = renderLintReport(failResult, {
+      colorMode: "auto",
+      isTTY: true,
+      noColor: true,
+    });
+
+    expect(passWithColor).toContain("\x1b[32mPASS\x1b[0m");
+    expect(failWithColor).toContain("\x1b[31mFAIL\x1b[0m");
+    expect(failWithoutColor).toContain("- Status: FAIL");
+    expect(failWithoutColor).not.toContain("\x1b[31m");
+  });
+
+  it("does not colorize in auto mode when not running in TTY", async () => {
+    const failResult = await runLint({
+      ontologyDir,
+      failOnWarnings: true,
+    });
+
+    const report = renderLintReport(failResult, {
+      colorMode: "auto",
+      isTTY: false,
+      noColor: false,
+    });
+
+    expect(report).toContain("- Status: FAIL");
+    expect(report).not.toContain("\x1b[31m");
   });
 });

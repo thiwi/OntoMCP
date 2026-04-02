@@ -3,22 +3,30 @@
 import { pathToFileURL } from "node:url";
 
 import { startOntoMcpServer } from "./mcp/startup.js";
-import { renderLintReport, runLint, type LintOptions, type LintResult } from "./cli/lint.js";
+import {
+  renderLintReport,
+  runLint,
+  type LintOptions,
+  type LintResult,
+  type RenderLintReportOptions,
+} from "./cli/lint.js";
 
 interface CliIO {
   stdout: (message: string) => void;
   stderr: (message: string) => void;
+  isTTY: boolean;
 }
 
 interface CliDependencies {
   startServer: () => Promise<void>;
   runLint: (options: LintOptions) => Promise<LintResult>;
-  renderLintReport: (result: LintResult) => string;
+  renderLintReport: (result: LintResult, options?: RenderLintReportOptions) => string;
 }
 
 const defaultIo: CliIO = {
   stdout: console.log,
   stderr: console.error,
+  isTTY: Boolean(process.stdout.isTTY),
 };
 
 const defaultDependencies: CliDependencies = {
@@ -31,7 +39,7 @@ function usageText(): string {
   return [
     "Usage:",
     "  ontomcp [start]",
-    "  ontomcp lint <ontologyDir> [--fail-on-warnings]",
+    "  ontomcp lint <ontologyDir> [--fail-on-warnings|--fail-on-warnings=true|--fail-on-warnings=false]",
     "",
     "Exit codes:",
     "  0  success",
@@ -40,31 +48,99 @@ function usageText(): string {
   ].join("\n");
 }
 
-function parseLintArguments(args: string[]): { ontologyDir: string; failOnWarnings: boolean } | undefined {
+interface LintParseSuccess {
+  kind: "ok";
+  ontologyDir: string;
+  failOnWarnings: boolean;
+}
+
+interface LintParseError {
+  kind: "error";
+  message: string;
+}
+
+interface LintParseHelp {
+  kind: "help";
+}
+
+type LintParseResult = LintParseSuccess | LintParseError | LintParseHelp;
+
+function parseBooleanFromFlag(value: string): boolean | undefined {
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "true" || normalized === "1") {
+    return true;
+  }
+  if (normalized === "false" || normalized === "0") {
+    return false;
+  }
+  return undefined;
+}
+
+function parseLintArguments(args: string[]): LintParseResult {
+  if (args.length === 1 && (args[0] === "--help" || args[0] === "help")) {
+    return { kind: "help" };
+  }
+
   let failOnWarnings = false;
   const positionals: string[] = [];
 
   for (const arg of args) {
+    if (arg === "--help" || arg === "help") {
+      return {
+        kind: "error",
+        message: "The --help option cannot be combined with other lint arguments.",
+      };
+    }
+
     if (arg === "--fail-on-warnings") {
       failOnWarnings = true;
       continue;
     }
 
+    if (arg.startsWith("--fail-on-warnings=")) {
+      const value = arg.slice("--fail-on-warnings=".length);
+      const parsed = parseBooleanFromFlag(value);
+      if (parsed === undefined) {
+        return {
+          kind: "error",
+          message: `Invalid value for --fail-on-warnings: ${value}`,
+        };
+      }
+      failOnWarnings = parsed;
+      continue;
+    }
+
     if (arg.startsWith("-")) {
-      return undefined;
+      return {
+        kind: "error",
+        message: `Unknown option: ${arg}`,
+      };
     }
 
     positionals.push(arg);
   }
 
   if (positionals.length !== 1) {
-    return undefined;
+    return {
+      kind: "error",
+      message: "Missing required argument: <ontologyDir>",
+    };
   }
 
   return {
+    kind: "ok",
     ontologyDir: positionals[0]!,
     failOnWarnings,
   };
+}
+
+function debugModeEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  const value = env.ONTOMCP_DEBUG;
+  if (!value) {
+    return false;
+  }
+  const normalized = value.trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes";
 }
 
 export async function executeCli(
@@ -86,18 +162,44 @@ export async function executeCli(
 
   if (command === "lint") {
     const parsed = parseLintArguments(rest);
-    if (!parsed) {
+    if (parsed.kind === "help") {
+      io.stdout(usageText());
+      return 0;
+    }
+
+    if (parsed.kind === "error") {
+      io.stderr(parsed.message);
       io.stderr(usageText());
       return 2;
     }
 
-    const lintResult = await deps.runLint({
-      ontologyDir: parsed.ontologyDir,
-      failOnWarnings: parsed.failOnWarnings,
-    });
+    try {
+      const lintResult = await deps.runLint({
+        ontologyDir: parsed.ontologyDir,
+        failOnWarnings: parsed.failOnWarnings,
+      });
 
-    io.stdout(deps.renderLintReport(lintResult));
-    return lintResult.exit_code;
+      io.stdout(
+        deps.renderLintReport(lintResult, {
+          colorMode: "auto",
+          isTTY: io.isTTY,
+          noColor: Boolean(process.env.NO_COLOR),
+        }),
+      );
+      return lintResult.exit_code;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      io.stderr(`Lint failed: ${message}`);
+
+      if (debugModeEnabled()) {
+        const stack = error instanceof Error ? error.stack : undefined;
+        if (stack && stack.length > 0) {
+          io.stderr(stack);
+        }
+      }
+
+      return 1;
+    }
   }
 
   if (command === "-h" || command === "--help" || command === "help") {

@@ -46,6 +46,18 @@ export interface LintOptions {
   failOnWarnings: boolean;
 }
 
+export type LintColorMode = "auto" | "always" | "never";
+
+export interface RenderLintReportOptions {
+  colorMode?: LintColorMode;
+  isTTY?: boolean;
+  noColor?: boolean;
+}
+
+const ANSI_RED = "\x1b[31m";
+const ANSI_GREEN = "\x1b[32m";
+const ANSI_RESET = "\x1b[0m";
+
 function uniqueSorted(values: string[]): string[] {
   return Array.from(new Set(values)).sort((left, right) => left.localeCompare(right));
 }
@@ -173,8 +185,34 @@ export async function runLint(options: LintOptions): Promise<LintResult> {
   };
 }
 
-export function renderLintReport(result: LintResult): string {
+function shouldUseColor(options: RenderLintReportOptions): boolean {
+  const colorMode = options.colorMode ?? "auto";
+
+  if (colorMode === "always") {
+    return true;
+  }
+
+  if (colorMode === "never") {
+    return false;
+  }
+
+  return Boolean(options.isTTY) && !options.noColor;
+}
+
+function colorize(value: string, color: string, enabled: boolean): string {
+  if (!enabled) {
+    return value;
+  }
+
+  return `${color}${value}${ANSI_RESET}`;
+}
+
+export function renderLintReport(
+  result: LintResult,
+  options: RenderLintReportOptions = {},
+): string {
   const lines: string[] = [];
+  const useColor = shouldUseColor(options);
 
   lines.push("OntoMCP Lint Report");
   lines.push("");
@@ -218,7 +256,13 @@ export function renderLintReport(result: LintResult): string {
 
   lines.push("Summary");
   lines.push(`- Total warnings: ${result.warning_count}`);
-  lines.push(`- Status: ${result.failed ? "FAIL" : "PASS"}`);
+  lines.push(
+    `- Status: ${
+      result.failed
+        ? colorize("FAIL", ANSI_RED, useColor)
+        : colorize("PASS", ANSI_GREEN, useColor)
+    }`,
+  );
 
   return lines.join("\n");
 }
