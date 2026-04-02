@@ -1,11 +1,14 @@
 {
   "name": "ontomcp",
-  "version": "1.0.0",
-  "description": "Ontology Model Context Protocol (MCP) server and CLI linter for deterministic ontology-driven schema generation and validation.",
+  "version": "0.1.0",
+  "description": "Deterministic ontology tooling for MCP agents: schema compilation, runtime validation, and CI linting.",
   "main": "dist/index.js",
   "bin": {
     "ontomcp": "dist/cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

@@ -3,7 +3,10 @@
 [![CI](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml/badge.svg)](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-Ontology Model Context Protocol (MCP) server and CLI linter for deterministic, ontology-driven schema generation and validation.
+OntoMCP gives coding agents deterministic access to enterprise ontologies instead of making them interpret raw `.ttl` files.
+It compiles OWL/RDFS/SHACL models into JSON Schema and Zod artifacts, and exposes them via MCP tools for targeted retrieval.
+It also validates payloads against compiled ontology constraints and offers a CLI linter for CI quality gates.
+The result is fewer hallucinated data models and a more reliable path from ontology to executable API code.
 
 <img src="docs/logo.png" alt="OntoMCP Logo" width="300" height="300" style="max-width: 300px; max-height: 300px;" />
 
