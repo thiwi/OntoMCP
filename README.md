@@ -29,13 +29,15 @@ OntoMCP provides:
 - `get_entity_graph_context`
 - `ontomcp lint <ontologyDir> [--fail-on-warnings]`
 
-## Quickstart
+## Quickstart (Run From Source)
 
 ```bash
 npm install
 npm run build
 npm run start
 ```
+
+This works without publishing to npm.
 
 CLI lint examples:
 
@@ -48,6 +50,12 @@ node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings
 
 # explicit boolean forms are also supported
 node dist/cli.js lint /absolute/path/to/ontology-pack --fail-on-warnings=true
+```
+
+If/when the package is published to npm, you can use:
+
+```bash
+npx ontomcp lint /absolute/path/to/ontology-pack --fail-on-warnings
 ```
 
 Lint UX notes:
