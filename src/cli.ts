@@ -115,10 +115,17 @@ function parseLintArguments(args: string[]): LintParseResult {
     positionals.push(arg);
   }
 
-  if (positionals.length !== 1) {
+  if (positionals.length === 0) {
     return {
       kind: "error",
       message: "Missing required argument: <ontologyDir>",
+    };
+  }
+
+  if (positionals.length > 1) {
+    return {
+      kind: "error",
+      message: `Too many arguments for lint: expected 1 <ontologyDir>, received ${positionals.length}`,
     };
   }
 

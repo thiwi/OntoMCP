@@ -66,6 +66,22 @@ describe("executeCli", () => {
     expect(stderr[0]).toContain("Missing required argument");
   });
 
+  it("returns usage error when lint has too many positional arguments", async () => {
+    const stderr: string[] = [];
+    const code = await executeCli(
+      ["lint", "./ontology-a", "./ontology-b"],
+      createIo({ stderr: (value) => stderr.push(value) }),
+      {
+        startServer: vi.fn(async () => {}),
+        runLint: vi.fn(async () => emptyLintResult(0)),
+        renderLintReport: vi.fn(() => ""),
+      },
+    );
+
+    expect(code).toBe(2);
+    expect(stderr[0]).toContain("Too many arguments for lint");
+  });
+
   it("calls lint runner and returns lint exit code", async () => {
     const runLintMock = vi.fn(async () => emptyLintResult(1));
     const renderMock = vi.fn(() => "lint-report");

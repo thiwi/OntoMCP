@@ -23,6 +23,7 @@ npm test
    - design notes,
    - test evidence.
 
+`main` is maintained as a protected branch: changes should land via PR review and passing CI only.
 Use the pull request template and keep PRs small and reviewable.
 
 ## Coding standards
