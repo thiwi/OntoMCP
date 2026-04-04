@@ -25,8 +25,8 @@ This pack models trade lifecycle and settlement structures with recursive refere
 From repository root:
 
 ```bash
-cd /Users/thilowilts/Code/OntoMCP
-ONTOLOGY_DIR=/Users/thilowilts/Code/OntoMCP/examples/ontologies/capital-markets npm run dev
+cd /path/to/OntoMCP
+ONTOLOGY_DIR=./examples/ontologies/capital-markets npm run dev
 ```
 
 Then call MCP tools:

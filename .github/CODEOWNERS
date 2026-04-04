@@ -1,7 +1,7 @@
 # Global owners
-* @thiwi
+* @ontomcp/maintainers
 
 # Core paths
-/src/ @thiwi
-/test/ @thiwi
-/docs/ @thiwi
+/src/ @ontomcp/maintainers
+/test/ @ontomcp/maintainers
+/docs/ @ontomcp/maintainers

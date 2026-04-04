@@ -1,6 +1,5 @@
 # OntoMCP
 
-[![CI](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml/badge.svg)](https://github.com/thiwi/OntoMCP/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 OntoMCP gives coding agents deterministic access to enterprise ontologies instead of making them interpret raw `.ttl` files.

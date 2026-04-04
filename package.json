@@ -27,16 +27,16 @@
     "zod",
     "validation"
   ],
-  "author": "thiwi",
+  "author": "OntoMCP contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thiwi/OntoMCP.git"
+    "url": "git+https://github.com/ontomcp/ontomcp.git"
   },
   "bugs": {
-    "url": "https://github.com/thiwi/OntoMCP/issues"
+    "url": "https://github.com/ontomcp/ontomcp/issues"
   },
-  "homepage": "https://github.com/thiwi/OntoMCP#readme",
+  "homepage": "https://github.com/ontomcp/ontomcp#readme",
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

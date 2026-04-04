@@ -11,7 +11,7 @@ Please do **not** open public issues for vulnerabilities.
 
 Report security issues to:
 
-- Email: **security@thiwi.dev**
+- Email: **security@ontomcp.dev**
 - Subject: `OntoMCP Security Report`
 
 Please include:

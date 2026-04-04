@@ -25,8 +25,8 @@ This pack models a retail banking domain with cyclic relations and mixed cardina
 From repository root:
 
 ```bash
-cd /Users/thilowilts/Code/OntoMCP
-ONTOLOGY_DIR=/Users/thilowilts/Code/OntoMCP/examples/ontologies/retail-banking npm run dev
+cd /path/to/OntoMCP
+ONTOLOGY_DIR=./examples/ontologies/retail-banking npm run dev
 ```
 
 Then call MCP tools:

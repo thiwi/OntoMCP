@@ -4,8 +4,8 @@
 
 Use GitHub Discussions or Issues:
 
-- Questions: https://github.com/thiwi/OntoMCP/discussions
-- Bugs/Features: https://github.com/thiwi/OntoMCP/issues
+- Questions: https://github.com/ontomcp/ontomcp/discussions
+- Bugs/Features: https://github.com/ontomcp/ontomcp/issues
 
 ## Bug Reports
 

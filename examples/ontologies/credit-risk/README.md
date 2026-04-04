@@ -26,8 +26,8 @@ This pack models a credit risk domain with namespace collisions, cycles, and dee
 From repository root:
 
 ```bash
-cd /Users/thilowilts/Code/OntoMCP
-ONTOLOGY_DIR=/Users/thilowilts/Code/OntoMCP/examples/ontologies/credit-risk npm run dev
+cd /path/to/OntoMCP
+ONTOLOGY_DIR=./examples/ontologies/credit-risk npm run dev
 ```
 
 Then call MCP tools:
