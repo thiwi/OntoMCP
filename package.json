@@ -46,7 +46,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@emnapi/core": "^1.9.1",
+    "@emnapi/core": "^1.9.2",
     "@emnapi/runtime": "^1.9.1",
     "@emnapi/wasi-threads": "^1.2.0",
     "@types/n3": "^1.26.1",
