@@ -48,7 +48,7 @@
   "devDependencies": {
     "@emnapi/core": "^1.9.1",
     "@emnapi/runtime": "^1.9.1",
-    "@emnapi/wasi-threads": "^1.2.0",
+    "@emnapi/wasi-threads": "^1.2.1",
     "@types/n3": "^1.26.1",
     "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.2",
